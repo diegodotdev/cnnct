@@ -29,7 +29,7 @@ export default function Nav() {
               Sign Out
             </Button>
           ) : (
-            <Link href="/sign-in">
+            <Link href="/auth">
               <Button>Sign In</Button>
             </Link>
           )}

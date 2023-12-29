@@ -4,6 +4,7 @@ import "../globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 const pacifico = Pacifico({ subsets: ["latin"], weight: ["400"] });
@@ -36,7 +37,10 @@ export default function RootLayout({
                 </p>
               </div>
             </div>
-            <main className="w-1/2 h-full">{children}</main>
+            <main className="w-1/2 h-full">
+              {children}
+              <Toaster />
+            </main>
           </div>
         </ThemeProvider>
       </body>

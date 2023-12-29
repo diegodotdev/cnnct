@@ -24,6 +24,10 @@ import {
 import { Separator } from "./ui/separator";
 import { Pacifico } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { signIn, signUp } from "@/lib/requests";
+import { useRouter } from "next/navigation";
+import { setLocalStorage } from "@/hooks/useLocalStorage";
+import { useToast } from "@/components/ui/use-toast";
 
 const pacifico = Pacifico({ subsets: ["latin"], weight: ["400"] });
 
@@ -40,6 +44,8 @@ const signUpSchema = z.object({
 });
 
 export default function SignInForm() {
+  const { toast } = useToast();
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -56,11 +62,32 @@ export default function SignInForm() {
     },
   });
 
-  const onSignIn = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onSignIn = async (values: z.infer<typeof formSchema>) => {
+    await signIn(values).then((res: any) => {
+      if (res?.message === "User Found") {
+        setLocalStorage(values?.username);
+        router.push("/");
+      } else {
+        toast({
+          title: res?.message,
+          variant: "destructive",
+        });
+        form.reset();
+      }
+    });
   };
-  const onSignUp = (values: z.infer<typeof signUpSchema>) => {
-    console.log(values);
+  const onSignUp = async (values: z.infer<typeof signUpSchema>) => {
+    await signUp(values).then((res: any) => {
+      if (res?.message === "CREATED") {
+        setLocalStorage(values?.username);
+        router.push("/");
+      } else {
+        toast({
+          title: res?.message,
+          variant: "destructive",
+        });
+      }
+    });
   };
   return (
     <div className="w-full h-full flex justify-center items-center flex-col gap-5">
