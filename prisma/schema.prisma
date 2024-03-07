@@ -14,23 +14,40 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  username  String
-  firstName String
-  lastName  String
-  avatar    String
-  bio       String?
-  recipes   Recipe[]
+  id       String    @id @default(uuid())
+  username String
+  avatar   String
+  bio      String
+  posts    Post[]
+  likes    Like[]
+  comments Comment[]
 }
 
-model Recipe {
-  id           String   @id @default(uuid())
-  title        String
-  description  String
-  ingredients  String[]
-  instructions String[]
-  image        String
-  category     String
-  userId       String
-  user         User     @relation(fields: [userId], references: [id])
+model Post {
+  id         String    @id @default(uuid())
+  created_at DateTime  @default(now())
+  user_id    String
+  user       User      @relation(fields: [user_id], references: [id])
+  content    String?
+  image      String?
+  likes      Like[]
+  comments   Comment[]
+}
+
+model Like {
+  id      String @id @default(uuid())
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id])
+  post_id String
+  post    Post   @relation(fields: [post_id], references: [id])
+}
+
+model Comment {
+  id         String   @id @default(uuid())
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id])
+  post_id    String
+  post       Post     @relation(fields: [post_id], references: [id])
+  content    String
+  created_at DateTime @default(now())
 }
